@@ -5,31 +5,24 @@ import Modal from "./Modal";
 import { useState } from "react";
 
 export default function PostList({ isVisible, onStopPosting }) {
-  const [enteredBody, setEnteredBody] = useState("");
-  const [enteredAuthor, setEnteredAuthor] = useState("");
+  const [posts, setPosts] = useState([]);
 
-  const bodyChangeHandler = (event) => {
-    setEnteredBody(event.target.value);
-  };
-
-  const AuthorChangeHandler = (event) => {
-    setEnteredAuthor(event.target.value);
+  const addPostHandler = (postData) => {
+    setPosts((existingPosts) => [postData, ...existingPosts]);
   };
 
   return (
     <>
       {isVisible && (
         <Modal onClose={onStopPosting}>
-          <NewPost
-            onBodyChange={bodyChangeHandler}
-            onAuthorChange={AuthorChangeHandler}
-            onCancel={onStopPosting}
-          />
+          <NewPost onCancel={onStopPosting} onAddPost={addPostHandler} />
         </Modal>
       )}
 
       <ul className={classes.posts}>
-        <Post author={enteredAuthor} body={enteredBody} />
+        {posts.map((post) => (
+          <Post key={post.body} author={post.author} body={post.body} />
+        ))}
       </ul>
     </>
   );
